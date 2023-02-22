@@ -19,5 +19,19 @@ const errorResponseHandler = (error) => {
 };
 
 const successResponseHandler = (response) => {
-    return Promise.resolve(response.data);
-}
+  return Promise.resolve(response.data);
+};
+
+axios.interceptors.request.use(
+  (request) => requestHandler(request),
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+axios.interceptors.response.use(
+  (response) => successResponseHandler(response),
+  (error) => errorResponseHandler(error)
+);
+
+export default axios;
