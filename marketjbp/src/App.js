@@ -1,22 +1,25 @@
-function App() {
+import React, { useEfect, useReducer } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { AuthContext } from "./components/auth/authContext";
+import { AppRouter } from "./components/routes/AppRouter";
+import { authReducer } from "./components/auth/authReducer";
+
+const init = () => {
+  return JSON.parse(localStorage.getItem("user")) || { logged: false };
+};
+
+const App = () => {
+  const [user, dispatch] = useReducer(authReducer, {}, init);
+
+  useEfect(() => {
+    if (!user) return;
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthContext.Provider value={{ dispatch, user }}>
+      <AppRouter />
+    </AuthContext.Provider>
   );
-}
+};
 
 export default App;
